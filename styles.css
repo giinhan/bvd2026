@@ -5,6 +5,11 @@
   --panel: #fffdf9;
   --shadow: #ff3a32;
   --brick: #6f120b;
+  --paper-bvd: #fff0ed;
+  --paper-w: #fff1dc;
+  --paper-u: #eef7e6;
+  --paper-s: #eaf4ff;
+  --paper-f: #ebf8ed;
   --w-color: #ff6500;
   --u-color: #4c7a36;
   --s-color: #2489f2;
@@ -25,6 +30,27 @@ body {
   font-family: "IBM Plex Mono", "Noto Sans KR", monospace;
   font-size: 16px;
   line-height: 1.34;
+  transition: background-color 160ms ease;
+}
+
+body[data-category="BVD"] {
+  --paper: var(--paper-bvd);
+}
+
+body[data-category="W"] {
+  --paper: var(--paper-w);
+}
+
+body[data-category="U"] {
+  --paper: var(--paper-u);
+}
+
+body[data-category="S"] {
+  --paper: var(--paper-s);
+}
+
+body[data-category="F"] {
+  --paper: var(--paper-f);
 }
 
 .topbar {
@@ -32,7 +58,8 @@ body {
   top: 0;
   z-index: 10;
   padding: 26px 3vw 18px;
-  background: linear-gradient(180deg, var(--paper) 72%, rgba(255, 240, 237, 0));
+  background: linear-gradient(180deg, var(--paper) 72%, color-mix(in srgb, var(--paper) 0%, transparent));
+  transition: background 160ms ease;
 }
 
 .tabs {

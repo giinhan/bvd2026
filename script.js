@@ -393,6 +393,7 @@ function selectCategory(selectedTab) {
   const category = selectedTab.dataset.category;
   const cards = document.querySelectorAll(".update-card");
 
+  document.body.dataset.category = category;
   tabs.forEach((tab) => tab.classList.toggle("is-active", tab === selectedTab));
   cards.forEach((card) => {
     const isCommonCard = card.dataset.category === "BVD";

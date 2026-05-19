@@ -121,21 +121,29 @@ body[data-category="F"] {
 .feed {
   width: min(100% - 6vw, 1520px);
   margin: 0 auto;
-  column-count: 5;
-  column-gap: 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
   padding: 8px 0 72px;
+}
+
+.feed-column {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  flex-direction: column;
+  gap: 38px;
 }
 
 .update-card {
   --card-color: var(--brick);
-  display: inline-block;
+  display: block;
   width: 100%;
-  margin: 0 0 38px;
+  margin: 0;
   border: 1px solid var(--card-color);
   color: var(--card-color);
   background: var(--panel);
   box-shadow: 7px 7px 0 var(--card-color);
-  break-inside: avoid;
   transition:
     opacity 160ms ease,
     transform 160ms ease;
@@ -234,23 +242,15 @@ p {
   color: var(--ink-soft);
 }
 
-@media (max-width: 1320px) {
-  .feed {
-    column-count: 4;
-  }
-}
-
 @media (max-width: 1080px) {
   .feed {
-    column-count: 3;
-    column-gap: 30px;
+    gap: 30px;
   }
 }
 
 @media (max-width: 820px) {
   .feed {
-    column-count: 2;
-    column-gap: 24px;
+    gap: 24px;
   }
 }
 
@@ -276,12 +276,15 @@ p {
 
   .feed {
     width: calc(100% - 36px);
-    column-count: 1;
+    gap: 24px;
     padding-bottom: 42px;
   }
 
+  .feed-column {
+    gap: 24px;
+  }
+
   .update-card {
-    margin-bottom: 24px;
     box-shadow: 5px 5px 0 var(--card-color);
   }
 

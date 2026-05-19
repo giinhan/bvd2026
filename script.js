@@ -189,6 +189,20 @@ const farmUpdates = [
     text: "비온뒤 맑!음!",
   },
   {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "b-28",
+    date: "2026. 5. 19",
+    text: "맘에드는 색상의 무당벌레 발견",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "b-29",
+    date: "2026. 5. 19",
+    text: "전사장님에게 빌려드린 노지에서 옥시기들이 쑥쑥 자란다",
+  },
+  {
     category: "F",
     folder: "fufus",
     fileName: "f-01",
@@ -229,6 +243,83 @@ const farmUpdates = [
     fileName: "f-06",
     date: "2026. 5. 15",
     text: "봄에 심은 것들",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "f-07",
+    date: "2026. 5. 19",
+    text: "수박무꽃이 참 이쁘지만 꽃대가 이렇게 빠르게 올라오면 먹는 무로 자라지 못하므로 이 꽃으로는 한번 씨앗을 받아볼까요",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "f-08",
+    date: "2026. 5. 19",
+    text: "얘도 심상치 않다…낮 기온이 높아지면 생기는 추대현상!!",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "f-09",
+    date: "2026. 5. 19",
+    text: "열무가 쑥쑥 큽니다. 조만간 한번 솎아서 보내드리리",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "f-10",
+    date: "2026. 5. 19",
+    text: "수미감자 4개 중 살아남은 튼실이 1",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "f-11",
+    date: "2026. 5. 19",
+    text: "두백감자는 씨감자로 추가 심었더니 땅 뚫고 빼꼼",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "f-12",
+    date: "2026. 5. 19",
+    text: "두백빼꼼 2",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "f-13",
+    date: "2026. 5. 19",
+    text: "잘가 수미….",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "f-14",
+    date: "2026. 5. 19",
+    text: "얘도 저 세상 갈듯 보였으나 회생하심",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "f-15",
+    date: "2026. 5. 19",
+    text: "대만쪽파 너무 잘 크고요",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "f-16",
+    date: "2026. 5. 19",
+    text: "베이비 쪽파, 베이비 잎상추",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "f-17",
+    date: "2026. 5. 19",
+    text: "수박무 모종 사이에서 열심히 크고 있는 오이 둘",
   },
   {
     category: "S",
@@ -339,6 +430,8 @@ const farmUpdates = [
 
 const tabs = document.querySelectorAll(".tab");
 const feed = document.querySelector(".feed");
+const imageVersion = "20260519-6";
+let currentCategory = document.querySelector(".tab.is-active")?.dataset.category || tabs[0]?.dataset.category || "BVD";
 
 function parseDateTag(dateTag) {
   const [year, month, day] = dateTag.match(/\d+/g).map(Number);
@@ -348,7 +441,7 @@ function parseDateTag(dateTag) {
 function getImagePaths(update) {
   const folder = update.folder || update.category.toLowerCase();
   const imageFiles = update.imageFiles || [`${update.fileName}.JPG`];
-  return imageFiles.map((file) => `./img/${folder}/${file}`);
+  return imageFiles.map((file) => `./img/${folder}/${file}?v=${imageVersion}`);
 }
 
 function createUpdateCard(update) {
@@ -384,28 +477,47 @@ function createUpdateCard(update) {
   return card;
 }
 
-function renderUpdates() {
-  const sortedUpdates = [...farmUpdates].sort((a, b) => parseDateTag(b.date) - parseDateTag(a.date));
-  feed.replaceChildren(...sortedUpdates.map(createUpdateCard));
+function getColumnCount() {
+  if (window.matchMedia("(max-width: 560px)").matches) return 1;
+  if (window.matchMedia("(max-width: 820px)").matches) return 2;
+  if (window.matchMedia("(max-width: 1080px)").matches) return 3;
+  if (window.matchMedia("(max-width: 1320px)").matches) return 4;
+  return 5;
+}
+
+function getVisibleUpdates(category) {
+  return [...farmUpdates]
+    .sort((a, b) => parseDateTag(b.date) - parseDateTag(a.date))
+    .filter((update) => update.category === "BVD" || update.category === category);
+}
+
+function renderUpdates(category = currentCategory) {
+  const columns = Array.from({ length: getColumnCount() }, () => {
+    const column = document.createElement("div");
+    column.className = "feed-column";
+    return column;
+  });
+
+  getVisibleUpdates(category).forEach((update, index) => {
+    columns[index % columns.length].append(createUpdateCard(update));
+  });
+
+  feed.replaceChildren(...columns);
 }
 
 function selectCategory(selectedTab) {
   const category = selectedTab.dataset.category;
-  const cards = document.querySelectorAll(".update-card");
 
+  currentCategory = category;
   document.body.dataset.category = category;
   tabs.forEach((tab) => tab.classList.toggle("is-active", tab === selectedTab));
-  cards.forEach((card) => {
-    const isCommonCard = card.dataset.category === "BVD";
-    const isSelectedCard = card.dataset.category === category;
-    card.classList.toggle("is-hidden", !isCommonCard && !isSelectedCard);
-  });
+  renderUpdates(category);
 }
-
-renderUpdates();
 
 tabs.forEach((tab) => {
   tab.addEventListener("click", () => selectCategory(tab));
 });
 
 selectCategory(document.querySelector(".tab.is-active") || tabs[0]);
+
+window.addEventListener("resize", () => renderUpdates());

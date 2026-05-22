@@ -693,6 +693,13 @@ const farmUpdates = [
     text: "감자싹 나와라 화이팅하고 있고! 추가 써있는 곳에 모종으로 키운 녀석들 옮겨심을 예정이에요! 운명하신 들깨는 비버댐 스페어로 심은 곳의 것으로 대체할 예정입니닷!",
   },
   {
+    category: "U",
+    folder: "usac",
+    imageFiles: ["u-23-0515-1.jpeg", "u-23-0515-2.jpeg"],
+    date: "2026. 5. 15",
+    text: '"미나리 전멸"',
+  },
+  {
     category: "W",
     folder: "works",
     fileName: "w-01",
@@ -773,7 +780,7 @@ const farmUpdates = [
 
 const tabs = document.querySelectorAll(".tab");
 const feed = document.querySelector(".feed");
-const imageVersion = "20260522-2";
+const imageVersion = "20260522-5";
 let currentCategory = document.querySelector(".tab.is-active")?.dataset.category || tabs[0]?.dataset.category || "BVD";
 
 function parseDateTag(dateTag) {
@@ -800,6 +807,9 @@ function createUpdateCard(update) {
   imageWrap.className = "image-wrap";
   if (update.imageFiles?.length > 1) {
     imageWrap.classList.add("image-stack");
+    if (update.imageFiles.length === 2) {
+      imageWrap.classList.add("image-stack-pair");
+    }
   }
 
   const images = getImagePaths(update).map((src, index) => {
@@ -830,8 +840,16 @@ function getColumnCount() {
 
 function getVisibleUpdates(category) {
   return [...farmUpdates]
-    .sort((a, b) => parseDateTag(b.date) - parseDateTag(a.date))
-    .filter((update) => update.category === "BVD" || update.category === category);
+    .filter((update) => update.category === "BVD" || update.category === category)
+    .sort((a, b) => {
+      const dateDiff = parseDateTag(b.date) - parseDateTag(a.date);
+      if (dateDiff) return dateDiff;
+      if (category !== "BVD") {
+        if (a.category === category && b.category === "BVD") return -1;
+        if (a.category === "BVD" && b.category === category) return 1;
+      }
+      return 0;
+    });
 }
 
 function renderUpdates(category = currentCategory) {

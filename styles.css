@@ -221,6 +221,16 @@ p {
   aspect-ratio: 1.5 / 1;
 }
 
+.image-stack-pair {
+  grid-template-columns: 1fr;
+  background: transparent;
+}
+
+.image-stack-pair img:first-of-type {
+  grid-column: auto;
+  aspect-ratio: auto;
+}
+
 .date-tag {
   position: absolute;
   right: 9px;

@@ -389,7 +389,7 @@ const farmUpdates = [
     folder: "fufus",
     fileName: "f-19-0522",
     date: "2026. 5. 22",
-    text: "운명하센 바질만 한번 리필해드리고! 곧 열무 한번 솎아줘야겠음!",
+    text: "운명하신 바질만 한번 리필해드리고! 곧 열무 한번 솎아줘야겠음!",
   },
   {
     category: "S",
@@ -780,8 +780,19 @@ const farmUpdates = [
 
 const tabs = document.querySelectorAll(".tab");
 const feed = document.querySelector(".feed");
-const imageVersion = "20260522-5";
-let currentCategory = document.querySelector(".tab.is-active")?.dataset.category || tabs[0]?.dataset.category || "BVD";
+const imageVersion = "20260522-7";
+
+function getCategories() {
+  return [...tabs].map((tab) => tab.dataset.category);
+}
+
+function getInitialCategory() {
+  const hashCategory = decodeURIComponent(window.location.hash.replace("#", "")).toUpperCase();
+  if (getCategories().includes(hashCategory)) return hashCategory;
+  return document.querySelector(".tab.is-active")?.dataset.category || tabs[0]?.dataset.category || "BVD";
+}
+
+let currentCategory = getInitialCategory();
 
 function parseDateTag(dateTag) {
   const [year, month, day] = dateTag.match(/\d+/g).map(Number);
@@ -870,6 +881,9 @@ function selectCategory(selectedTab) {
   const category = selectedTab.dataset.category;
 
   currentCategory = category;
+  if (window.location.hash !== `#${category}`) {
+    history.replaceState(null, "", `#${category}`);
+  }
   document.body.dataset.category = category;
   tabs.forEach((tab) => tab.classList.toggle("is-active", tab === selectedTab));
   renderUpdates(category);
@@ -879,6 +893,6 @@ tabs.forEach((tab) => {
   tab.addEventListener("click", () => selectCategory(tab));
 });
 
-selectCategory(document.querySelector(".tab.is-active") || tabs[0]);
+selectCategory([...tabs].find((tab) => tab.dataset.category === currentCategory) || tabs[0]);
 
 window.addEventListener("resize", () => renderUpdates());

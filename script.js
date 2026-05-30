@@ -780,7 +780,12 @@ const farmUpdates = [
 
 const tabs = document.querySelectorAll(".tab");
 const feed = document.querySelector(".feed");
-const imageVersion = "20260522-7";
+const passwordForm = document.querySelector(".password-form");
+const passwordInput = document.querySelector(".password-input");
+const passwordError = document.querySelector(".password-error");
+const ACCESS_PASSWORD = "bvd";
+const ACCESS_STORAGE_KEY = "bvd-access-granted";
+const imageVersion = "20260530-1";
 
 function getCategories() {
   return [...tabs].map((tab) => tab.dataset.category);
@@ -793,6 +798,7 @@ function getInitialCategory() {
 }
 
 let currentCategory = getInitialCategory();
+let isUnlocked = false;
 
 function parseDateTag(dateTag) {
   const [year, month, day] = dateTag.match(/\d+/g).map(Number);
@@ -864,6 +870,8 @@ function getVisibleUpdates(category) {
 }
 
 function renderUpdates(category = currentCategory) {
+  if (!isUnlocked) return;
+
   const columns = Array.from({ length: getColumnCount() }, () => {
     const column = document.createElement("div");
     column.className = "feed-column";
@@ -893,6 +901,34 @@ tabs.forEach((tab) => {
   tab.addEventListener("click", () => selectCategory(tab));
 });
 
-selectCategory([...tabs].find((tab) => tab.dataset.category === currentCategory) || tabs[0]);
+function unlockSite() {
+  isUnlocked = true;
+  document.body.classList.remove("is-locked");
+  selectCategory([...tabs].find((tab) => tab.dataset.category === currentCategory) || tabs[0]);
+}
+
+passwordForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  if (passwordInput.value === ACCESS_PASSWORD) {
+    sessionStorage.setItem(ACCESS_STORAGE_KEY, "true");
+    unlockSite();
+    return;
+  }
+
+  passwordInput.value = "";
+  passwordError.textContent = "비밀번호가 맞지 않습니다.";
+  passwordInput.focus();
+});
+
+passwordInput?.addEventListener("input", () => {
+  passwordError.textContent = "";
+});
+
+if (sessionStorage.getItem(ACCESS_STORAGE_KEY) === "true") {
+  unlockSite();
+} else {
+  passwordInput?.focus();
+}
 
 window.addEventListener("resize", () => renderUpdates());

@@ -10,9 +10,23 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260522-7" />
+    <link rel="stylesheet" href="./styles.css?v=20260530-1" />
   </head>
-  <body>
+  <body class="is-locked">
+    <section class="password-gate" aria-label="비밀번호 입력">
+      <form class="password-form">
+        <input
+          class="password-input"
+          type="password"
+          name="password"
+          aria-label="비밀번호"
+          autocomplete="current-password"
+          autofocus
+        />
+        <p class="password-error" role="alert" aria-live="polite"></p>
+      </form>
+    </section>
+
     <header class="topbar" aria-label="카테고리">
       <nav class="tabs" aria-label="농장소식 카테고리">
         <button class="tab is-active" type="button" data-category="BVD">BVD</button>
@@ -25,6 +39,6 @@
 
     <main class="feed" aria-live="polite"></main>
 
-    <script src="./script.js?v=20260522-7"></script>
+    <script src="./script.js?v=20260530-1"></script>
   </body>
 </html>

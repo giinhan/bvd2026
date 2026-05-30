@@ -7,23 +7,41 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&family=Work+Sans:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260530-1" />
+    <link rel="stylesheet" href="./styles.css?v=20260530-5" />
   </head>
   <body class="is-locked">
-    <section class="password-gate" aria-label="비밀번호 입력">
-      <form class="password-form">
+    <section class="password-gate" aria-label="로그인">
+      <p class="auth-title">비버댐 비닐하우스메이트 전용 페이지</p>
+      <div class="auth-panel">
+        <img class="auth-logo" src="./img/auth-beaver-logo.png" alt="" />
+      </div>
+      <form class="auth-form">
+        <div class="auth-tabs" role="tablist" aria-label="계정">
+          <button class="auth-tab is-active" type="button" data-auth-mode="login">로그인</button>
+          <button class="auth-tab" type="button" data-auth-mode="signup">회원가입</button>
+        </div>
         <input
-          class="password-input"
+          class="auth-input"
+          type="text"
+          name="user_id"
+          aria-label="아이디"
+          autocomplete="username"
+          placeholder="아이디"
+          autofocus
+        />
+        <input
+          class="auth-input"
           type="password"
           name="password"
           aria-label="비밀번호"
           autocomplete="current-password"
-          autofocus
+          placeholder="비밀번호"
         />
-        <p class="password-error" role="alert" aria-live="polite"></p>
+        <button class="auth-submit" type="submit">확인</button>
+        <p class="auth-message" role="alert" aria-live="polite"></p>
       </form>
     </section>
 
@@ -35,10 +53,77 @@
         <button class="tab" type="button" data-category="S">S</button>
         <button class="tab" type="button" data-category="F">F</button>
       </nav>
+      <button class="deliver-button" type="button" aria-label="배달">
+        <svg class="deliver-icon" viewBox="0 0 64 48" aria-hidden="true">
+          <path fill="#7a2d4b" d="M27 12h4V9h20v3h4v4h3v18h-4v4H31v-4h-4v-5h-4V17h4v-5Z" />
+          <path fill="#a94730" d="M31 11h18v3h5v5h2v13h-3v4H32v-3h-4V18h3v-7Z" />
+          <path fill="#d56c30" d="M33 13h14v3h5v5h2v9h-3v-4h-4v-4h-9v4h-4v6h-4V19h3v-6Z" />
+          <path fill="#81334c" d="M36 20h13v3h3v8h-3v3H36v-3h-3v-8h3v-3Z" />
+          <path fill="#b7542f" d="M38 22h9v3h3v4h-2v3H38v-2h6v-3h-6v-5Z" />
+          <path fill="#e88b38" d="M40 24h5v3h-2v2h-3v-5Z" />
+          <path fill="#6b2742" d="M50 35h8v4H28v-4h7v-2h15v2Z" />
+          <path fill="#8f3a28" d="M28 35h21v2H28v-2Z" />
+          <path fill="#d87535" d="M5 7h4v11h5V7h4v17h5v9h5v5H11v-3H7v-5H4V18h3V9H5V7Z" />
+          <path fill="#ed9a45" d="M7 8h2v12h7V8h2v18h4v7h4v3H12v-3H8v-5H5V19h2V8Z" />
+          <path fill="#f6bd5a" d="M6 20h4v4H6v-4ZM11 28h4v3h-4v-3ZM17 23h4v4h-4v-4ZM12 9h2v9h-2V9Z" />
+          <path fill="#ffffff" d="M7 8h2v2H7V8ZM16 8h2v2h-2V8ZM29 13h3v2h-3v-2ZM27 17h3v2h-3v-2Z" />
+          <path fill="#7a2d4b" d="M4 6h6v3H8v9H5V9H4V6ZM13 6h6v3h-2v9h-3V9h-1V6ZM4 28h4v4H4v-4Z" />
+          <path fill="#c06b36" d="M20 29h7v7h-7v-7Z" />
+        </svg>
+      </button>
+      <button class="logout-button" type="button" aria-label="로그아웃">
+        <svg class="logout-icon" viewBox="0 0 32 40" aria-hidden="true">
+          <path fill="#5b271d" d="M9 5h4V3h10v2h3v4h2v20h-2v4h-6v5H11v-5H6v-4H4V12h2V9h3V5Z" />
+          <path fill="#7b3d32" d="M10 7h14v3h2v18h-2v3H8v-3H6V13h2v-3h2V7Z" />
+          <path fill="#4b2119" d="M24 10h3v18h-2V13h-1v-3ZM8 29h15v2H8v-2Z" />
+          <path fill="#b46b50" d="M8 13h1v15H8V13ZM10 8h12v1H10V8ZM9 29h13v1H9v-1Z" />
+          <path fill="#f0b766" d="M23 5h3v3h2v5h-3v3h-4v-3h-3V9h3V6h2V5Z" />
+          <path fill="#5b271d" d="M21 4h5v2h-3v2h-2V4ZM25 8h3v2h-3V8ZM20 12h3v2h-3v-2ZM27 13h2v3h-4v-2h2v-1Z" />
+          <path fill="#f4c06f" d="M9 15h2v4H9v-4ZM13 18h2v2h-2v-2ZM18 22h2v2h-2v-2ZM12 25h2v2h-2v-2ZM21 26h2v2h-2v-2ZM15 12h2v2h-2v-2Z" />
+          <path fill="#8a422c" d="M11 37h8v2h-8v-2Z" />
+          <path fill="#f29982" d="M12 32h7v6h-7v-6Z" />
+          <path fill="#ffc09f" d="M13 32h2v5h-2v-5Z" />
+        </svg>
+      </button>
     </header>
 
     <main class="feed" aria-live="polite"></main>
 
-    <script src="./script.js?v=20260530-1"></script>
+    <div class="delivery-modal is-hidden" role="dialog" aria-modal="true" aria-label="배달 메모">
+      <form class="delivery-form">
+        <button class="delivery-close" type="button" aria-label="닫기">×</button>
+        <textarea
+          class="delivery-input"
+          name="comment"
+          placeholder="배달해주세요"
+          autocomplete="off"
+          autocapitalize="off"
+          autocorrect="off"
+          spellcheck="false"
+          data-1p-ignore
+          data-lpignore="true"
+          data-form-type="other"
+          required
+        ></textarea>
+        <input
+          class="delivery-input"
+          type="text"
+          name="address"
+          placeholder="배달받을 주소"
+          autocomplete="off"
+          autocapitalize="off"
+          autocorrect="off"
+          spellcheck="false"
+          data-1p-ignore
+          data-lpignore="true"
+          data-form-type="other"
+          required
+        />
+        <button class="delivery-submit" type="submit">확인</button>
+        <p class="delivery-message" role="alert" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <script src="./script.js?v=20260530-5"></script>
   </body>
 </html>

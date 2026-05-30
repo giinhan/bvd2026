@@ -780,12 +780,23 @@ const farmUpdates = [
 
 const tabs = document.querySelectorAll(".tab");
 const feed = document.querySelector(".feed");
-const passwordForm = document.querySelector(".password-form");
-const passwordInput = document.querySelector(".password-input");
-const passwordError = document.querySelector(".password-error");
-const ACCESS_PASSWORD = "bvd";
-const ACCESS_STORAGE_KEY = "bvd-access-granted";
-const imageVersion = "20260530-1";
+const authForm = document.querySelector(".auth-form");
+const authTabs = document.querySelectorAll(".auth-tab");
+const authUserIdInput = document.querySelector('input[name="user_id"]');
+const authPasswordInput = document.querySelector('input[name="password"]');
+const authSubmit = document.querySelector(".auth-submit");
+const authMessage = document.querySelector(".auth-message");
+const logoutButton = document.querySelector(".logout-button");
+const deliverButton = document.querySelector(".deliver-button");
+const deliveryModal = document.querySelector(".delivery-modal");
+const deliveryForm = document.querySelector(".delivery-form");
+const deliveryClose = document.querySelector(".delivery-close");
+const deliveryMessage = document.querySelector(".delivery-message");
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwq16BgXtuKzrXvPtIpEXcUgoaFhMG7KbAWUhH7xkUpKAB3Evv6jK0QcVnSEOR7Gaj5/exec";
+const ACCESS_STORAGE_KEY = "bvd-user-access-granted";
+const USER_ID_STORAGE_KEY = "bvd-user-id";
+const imageVersion = "20260530-4";
+const pixelCommentIcons = ["droplet", "sun", "moon", "cloud", "sparkle", "tomato", "carrot", "corn", "pepper", "eggplant"];
 
 function getCategories() {
   return [...tabs].map((tab) => tab.dataset.category);
@@ -799,10 +810,22 @@ function getInitialCategory() {
 
 let currentCategory = getInitialCategory();
 let isUnlocked = false;
+let authMode = "login";
+let currentUserId = sessionStorage.getItem(USER_ID_STORAGE_KEY) || "";
+let deliveryUpdates = [];
+let renderRequestId = 0;
 
 function parseDateTag(dateTag) {
   const [year, month, day] = dateTag.match(/\d+/g).map(Number);
   return new Date(year, month - 1, day).getTime();
+}
+
+function getItemTime(item) {
+  if (item.type === "delivery") {
+    return new Date(item.timestamp).getTime() || 0;
+  }
+
+  return parseDateTag(item.date);
 }
 
 function getImagePaths(update) {
@@ -811,10 +834,146 @@ function getImagePaths(update) {
   return imageFiles.map((file) => `./img/${folder}/${file}?v=${imageVersion}`);
 }
 
+function getUpdateId(update) {
+  if (update.type === "delivery") return update.card_id;
+
+  const fileId = update.fileName || update.imageFiles?.[0]?.replace(/\.[^.]+$/, "") || update.date;
+  return `${update.category}:${fileId}`;
+}
+
+function formatCommentTime(timestamp) {
+  if (!timestamp) return "";
+
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function createCommentSection(cardId) {
+  const section = document.createElement("section");
+  section.className = "comments";
+  section.dataset.cardId = cardId;
+
+  const list = document.createElement("div");
+  list.className = "comment-list";
+
+  const form = document.createElement("form");
+  form.className = "comment-form is-hidden";
+
+  const input = document.createElement("input");
+  input.className = "comment-input";
+  input.type = "text";
+  input.name = "comment";
+  input.placeholder = "할 말이 있다";
+  input.autocomplete = "off";
+
+  const button = createPixelIconButton("submit", "댓글 등록", "comment-submit");
+
+  form.append(input, button);
+  section.append(list, form);
+
+  return section;
+}
+
+function getPixelCommentIcon() {
+  const iconName = pixelCommentIcons[Math.floor(Math.random() * pixelCommentIcons.length)];
+  const icons = {
+    droplet: `
+      <path fill="#4f6fee" d="M16 1h2v3h2v4h2v4h2v5h2v8h-2v3h-4v2H12v-2H8v-3H6v-8h2v-5h2V8h2V4h2V1h2Z" />
+      <path fill="#9ed7ff" d="M16 3h2v4h2v5h2v5h2v8h-2v2h-4v2H12v-2H8v-2H6v-8h2v-5h2V7h2V3h4Z" />
+      <path fill="#6d9cf7" d="M12 21h12v4h-2v2h-4v2h-6v-2H8v-3h2v-3h2Z" />
+      <path fill="#c8f5ff" d="M12 5h2v6h-2v3h-2v5H8v-7h2V8h2V5ZM11 18h3v3h-1v2h-3v-3h1v-2Z" />
+      <path fill="#ffffff" d="M11 16h2v2h-1v2h-2v-2h1v-2Z" />
+    `,
+    sun: `
+      <path fill="#c47b16" d="M14 1h4v5h-4V1ZM14 26h4v5h-4v-5ZM1 14h5v4H1v-4ZM26 14h5v4h-5v-4ZM5 5h4v4H5V5ZM23 5h4v4h-4V5ZM5 23h4v4H5v-4ZM23 23h4v4h-4v-4Z" />
+      <path fill="#f7b731" d="M11 6h10v3h3v4h3v8h-3v4h-3v3H11v-3H8v-4H5v-8h3V9h3V6Z" />
+      <path fill="#ffe66d" d="M12 8h8v3h3v10h-3v3h-8v-3H9V11h3V8Z" />
+      <path fill="#fff2a7" d="M11 10h5v3h-3v3h-3v-5h1v-1Z" />
+    `,
+    moon: `
+      <path fill="#ad6f19" d="M18 2h5v3h3v4h2v9h-2v4h-3v4h-5v3h-7v-2H8v-3H6v-5H4v-6h2V8h2V5h3V3h7V2Z" />
+      <path fill="#ffd85a" d="M17 4h5v3h3v4h2v5h-2v3h-3v3h-5v2h-5v-2h3v-3h3v-4h2V9h-2V6h-3V4h2Z" />
+      <path fill="#fff08a" d="M19 6h3v3h2v4h-2v3h-3v-3h1V9h-1V6Z" />
+    `,
+    cloud: `
+      <path fill="#4aa8e8" d="M9 12h3V9h8v3h4v3h3v8h-2v3H6v-3H3v-7h3v-2h3v-2Z" />
+      <path fill="#bdefff" d="M10 11h3V8h6v4h5v3h3v6h-2v2H6v-2H4v-5h4v-3h2v-2Z" />
+      <path fill="#e9fbff" d="M10 13h4v3H8v-2h2v-1ZM18 12h5v3h-5v-3Z" />
+    `,
+    sparkle: `
+      <path fill="#1faee9" d="M14 2h4v8h3v3h8v4h-8v3h-3v8h-4v-8h-3v-3H3v-4h8v-3h3V2Z" />
+      <path fill="#bdf7ff" d="M15 7h2v6h6v2h-6v6h-2v-6H9v-2h6V7Z" />
+      <path fill="#f7b731" d="M4 4h3v3h3v3H7v3H4v-3H1V7h3V4ZM25 22h2v3h3v2h-3v3h-2v-3h-3v-2h3v-3Z" />
+    `,
+    tomato: `
+      <path fill="#23395b" d="M11 8h3V5h4v3h4v3h4v4h2v8h-2v4h-4v2H10v-2H6v-4H4v-8h2v-4h5V8Z" />
+      <path fill="#218c4f" d="M13 6h3V3h3v5h5v3h-5v3h-3v-3h-5V8h2V6Z" />
+      <path fill="#e84236" d="M10 11h13v3h3v9h-2v3h-4v2h-8v-2H8v-3H6v-9h4v-3Z" />
+      <path fill="#ff6b57" d="M10 13h6v3h-3v3H9v-5h1v-1Z" />
+      <path fill="#b7292f" d="M20 16h5v7h-2v2h-5v-3h2v-6Z" />
+    `,
+    carrot: `
+      <path fill="#244f35" d="M18 2h3v4h4v3h-5v4h-3V9h-4V6h5V2Z" />
+      <path fill="#5dbb63" d="M13 3h4v4h-4V3ZM22 5h4v3h-4V5Z" />
+      <path fill="#9e3d24" d="M19 10h5v4h-2v5h-3v5h-3v5h-6v-6h3v-5h3v-5h3v-3Z" />
+      <path fill="#f26b2d" d="M18 11h5v3h-2v5h-3v5h-3v4h-4v-5h3v-5h3v-5h1v-2Z" />
+      <path fill="#ff9f43" d="M18 13h2v3h-3v2h-2v-3h3v-2Z" />
+    `,
+    corn: `
+      <path fill="#174d3a" d="M8 7h3v6h2V8h3v5h2V7h3v6h3v11h-3v3h-4v3h-5v-3H9v-3H6V13h2V7Z" />
+      <path fill="#2f9e54" d="M9 11h3v12h3v5h-3v-2H9v-3H7v-8h2v-4ZM21 11h2v12h-2v3h-4v2h-2v-5h3V11h3Z" />
+      <path fill="#e0a51b" d="M13 8h6v3h2v11h-2v3h-6v-3h-2V11h2V8Z" />
+      <path fill="#ffd24a" d="M14 10h2v3h-2v-3ZM18 10h2v3h-2v-3ZM12 14h2v3h-2v-3ZM16 14h2v3h-2v-3ZM20 14h1v3h-1v-3ZM14 18h2v3h-2v-3ZM18 18h2v3h-2v-3Z" />
+    `,
+    pepper: `
+      <path fill="#1f5d3a" d="M16 2h5v3h-3v3h3v3h-5V8h-3V5h3V2Z" />
+      <path fill="#7a1f2b" d="M13 8h9v3h3v14h-3v4H10v-4H7V12h3V9h3V8Z" />
+      <path fill="#e64c3c" d="M13 10h8v3h3v11h-2v3H11v-3H9V13h4v-3Z" />
+      <path fill="#ff806b" d="M13 12h3v13h-4v-3h1V12ZM19 12h3v10h-3V12Z" />
+    `,
+    eggplant: `
+      <path fill="#24553b" d="M18 3h4v3h-2v3h4v3h-5v3h-4v-3h-4V9h5V6h2V3Z" />
+      <path fill="#3b245f" d="M11 11h11v3h3v8h-2v4h-4v3H9v-2H6v-5h2v-7h3v-4Z" />
+      <path fill="#7d4cc2" d="M12 13h9v3h2v5h-2v4h-4v2H9v-2H7v-4h2v-5h3v-3Z" />
+      <path fill="#b88df2" d="M12 15h4v3h-3v3h-3v-4h2v-2Z" />
+    `,
+  };
+
+  return icons[iconName];
+}
+
+function createPixelIconButton(type, label, className) {
+  const button = document.createElement("button");
+  button.className = className;
+  button.type = type;
+  button.setAttribute("aria-label", label);
+  button.innerHTML = `
+    <svg class="comment-toggle-icon" viewBox="0 0 32 32" aria-hidden="true">
+      ${getPixelCommentIcon()}
+    </svg>
+  `;
+
+  return button;
+}
+
+function createCommentToggleButton() {
+  return createPixelIconButton("button", "댓글 추가", "comment-toggle");
+}
+
 function createUpdateCard(update) {
+  const cardId = getUpdateId(update);
   const card = document.createElement("article");
   card.className = "update-card image-card";
   card.dataset.category = update.category;
+  card.dataset.cardId = cardId;
 
   const text = document.createElement("p");
   text.className = "update-text";
@@ -841,10 +1000,47 @@ function createUpdateCard(update) {
   dateTag.className = "date-tag";
   dateTag.textContent = update.date;
 
-  imageWrap.append(...images, dateTag);
-  card.append(text, imageWrap);
+  imageWrap.append(...images, dateTag, createCommentToggleButton());
+  card.append(text, imageWrap, createCommentSection(cardId));
 
   return card;
+}
+
+function createDeliveryCard(delivery) {
+  const card = document.createElement("article");
+  card.className = "update-card image-card delivery-card";
+  card.dataset.category = delivery.team_id;
+  card.dataset.cardId = delivery.card_id;
+
+  const text = document.createElement("p");
+  text.className = "update-text";
+  text.textContent = "배달";
+
+  const body = document.createElement("div");
+  body.className = "delivery-body";
+
+  const comment = document.createElement("p");
+  comment.className = "delivery-comment";
+  comment.textContent = delivery.comment;
+
+  const address = document.createElement("p");
+  address.className = "delivery-address";
+  address.textContent = delivery.address;
+
+  const dateTag = document.createElement("span");
+  dateTag.className = "date-tag";
+  dateTag.textContent = formatCommentTime(delivery.timestamp);
+
+  body.append(comment, address, dateTag, createCommentToggleButton());
+  card.append(text, body, createCommentSection(delivery.card_id));
+
+  return card;
+}
+
+function createFeedCard(item) {
+  if (item.type === "delivery") return createDeliveryCard(item);
+
+  return createUpdateCard(item);
 }
 
 function getColumnCount() {
@@ -856,10 +1052,13 @@ function getColumnCount() {
 }
 
 function getVisibleUpdates(category) {
-  return [...farmUpdates]
-    .filter((update) => update.category === "BVD" || update.category === category)
+  const visibleFarmUpdates = [...farmUpdates]
+    .filter((update) => update.category === "BVD" || update.category === category);
+  const visibleDeliveries = deliveryUpdates.filter((delivery) => delivery.team_id === category);
+
+  return [...visibleFarmUpdates, ...visibleDeliveries]
     .sort((a, b) => {
-      const dateDiff = parseDateTag(b.date) - parseDateTag(a.date);
+      const dateDiff = getItemTime(b) - getItemTime(a);
       if (dateDiff) return dateDiff;
       if (category !== "BVD") {
         if (a.category === category && b.category === "BVD") return -1;
@@ -869,20 +1068,26 @@ function getVisibleUpdates(category) {
     });
 }
 
-function renderUpdates(category = currentCategory) {
+async function renderUpdates(category = currentCategory) {
   if (!isUnlocked) return;
 
+  const requestId = ++renderRequestId;
+  await loadDeliveries(category);
+  if (requestId !== renderRequestId) return;
+
+  const visibleUpdates = getVisibleUpdates(category);
   const columns = Array.from({ length: getColumnCount() }, () => {
     const column = document.createElement("div");
     column.className = "feed-column";
     return column;
   });
 
-  getVisibleUpdates(category).forEach((update, index) => {
-    columns[index % columns.length].append(createUpdateCard(update));
+  visibleUpdates.forEach((update, index) => {
+    columns[index % columns.length].append(createFeedCard(update));
   });
 
   feed.replaceChildren(...columns);
+  loadComments(visibleUpdates.map(getUpdateId));
 }
 
 function selectCategory(selectedTab) {
@@ -907,28 +1112,292 @@ function unlockSite() {
   selectCategory([...tabs].find((tab) => tab.dataset.category === currentCategory) || tabs[0]);
 }
 
-passwordForm?.addEventListener("submit", (event) => {
-  event.preventDefault();
+function logout() {
+  isUnlocked = false;
+  currentUserId = "";
+  sessionStorage.removeItem(ACCESS_STORAGE_KEY);
+  sessionStorage.removeItem(USER_ID_STORAGE_KEY);
+  feed.replaceChildren();
+  deliveryUpdates = [];
+  closeDeliveryModal();
+  document.body.classList.add("is-locked");
+  authUserIdInput.value = "";
+  authPasswordInput.value = "";
+  setAuthMode("login");
+}
 
-  if (passwordInput.value === ACCESS_PASSWORD) {
-    sessionStorage.setItem(ACCESS_STORAGE_KEY, "true");
-    unlockSite();
+function setAuthMessage(message) {
+  authMessage.textContent = message;
+}
+
+function setAuthLoading(isLoading) {
+  authSubmit.disabled = isLoading;
+  authSubmit.textContent = isLoading ? "확인 중" : "확인";
+}
+
+function setAuthMode(nextMode) {
+  authMode = nextMode;
+  authTabs.forEach((tab) => {
+    tab.classList.toggle("is-active", tab.dataset.authMode === nextMode);
+  });
+  authPasswordInput.autocomplete = nextMode === "login" ? "current-password" : "new-password";
+  setAuthMessage("");
+  authUserIdInput.focus();
+}
+
+async function requestAuth(action, userId, password) {
+  if (!GOOGLE_SCRIPT_URL) {
+    throw new Error("Google Apps Script 배포 URL을 먼저 넣어주세요.");
+  }
+
+  const response = await fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action,
+      user_id: userId,
+      password,
+    }),
+  });
+  const result = await response.json();
+
+  if (!response.ok || !result.ok) {
+    throw new Error(result.message || "요청을 처리하지 못했습니다.");
+  }
+
+  return result;
+}
+
+async function requestApi(payload) {
+  if (!GOOGLE_SCRIPT_URL) {
+    throw new Error("Google Apps Script 배포 URL을 먼저 넣어주세요.");
+  }
+
+  const response = await fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  const result = await response.json();
+
+  if (!response.ok || !result.ok) {
+    if (
+      result.message === "알 수 없는 요청입니다." &&
+      (payload.action === "list_deliveries" || payload.action === "add_delivery")
+    ) {
+      throw new Error("Apps Script를 최신 버전으로 재배포해주세요.");
+    }
+    throw new Error(result.message || "요청을 처리하지 못했습니다.");
+  }
+
+  return result;
+}
+
+async function loadDeliveries(category = currentCategory) {
+  try {
+    const result = await requestApi({
+      action: "list_deliveries",
+      team_id: category,
+    });
+
+    deliveryUpdates = (result.deliveries || []).map((delivery) => ({
+      ...delivery,
+      type: "delivery",
+    }));
+  } catch (error) {
+    deliveryUpdates = [];
+  }
+}
+
+function renderComments(cardId, comments = []) {
+  const section = [...document.querySelectorAll(".comments")].find(
+    (commentSection) => commentSection.dataset.cardId === cardId
+  );
+  if (!section) return;
+
+  const list = section.querySelector(".comment-list");
+  if (!comments.length) {
+    list.replaceChildren();
     return;
   }
 
-  passwordInput.value = "";
-  passwordError.textContent = "비밀번호가 맞지 않습니다.";
-  passwordInput.focus();
+  list.replaceChildren(
+    ...comments.map((comment) => {
+      const item = document.createElement("div");
+      item.className = "comment-item";
+
+      const text = document.createElement("p");
+      text.className = "comment-text";
+      text.textContent = comment.comment;
+
+      const meta = document.createElement("div");
+      meta.className = "comment-meta";
+      meta.textContent = `${comment.user_id} · ${formatCommentTime(comment.timestamp)}`;
+
+      item.append(text, meta);
+      return item;
+    })
+  );
+}
+
+async function loadComments(cardIds) {
+  try {
+    const result = await requestApi({
+      action: "list_comments",
+      card_ids: [...new Set(cardIds)],
+    });
+    const commentsByCard = result.comments || {};
+
+    cardIds.forEach((cardId) => {
+      renderComments(cardId, commentsByCard[cardId] || []);
+    });
+  } catch (error) {
+    console.warn(error.message);
+  }
+}
+
+authTabs.forEach((tab) => {
+  tab.addEventListener("click", () => setAuthMode(tab.dataset.authMode));
 });
 
-passwordInput?.addEventListener("input", () => {
-  passwordError.textContent = "";
+authForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const userId = authUserIdInput.value.trim();
+  const password = authPasswordInput.value;
+
+  if (!userId || !password) {
+    setAuthMessage("아이디와 비밀번호를 입력해주세요.");
+    return;
+  }
+
+  setAuthLoading(true);
+  setAuthMessage("");
+
+  try {
+    await requestAuth(authMode, userId, password);
+    sessionStorage.setItem(ACCESS_STORAGE_KEY, "true");
+    sessionStorage.setItem(USER_ID_STORAGE_KEY, userId);
+    currentUserId = userId;
+    unlockSite();
+  } catch (error) {
+    authPasswordInput.value = "";
+    setAuthMessage(error.message);
+    authPasswordInput.focus();
+  } finally {
+    setAuthLoading(false);
+  }
 });
 
-if (sessionStorage.getItem(ACCESS_STORAGE_KEY) === "true") {
+authForm?.addEventListener("input", () => {
+  setAuthMessage("");
+});
+
+function openDeliveryModal() {
+  deliveryModal.classList.remove("is-hidden");
+  deliveryMessage.textContent = "";
+  deliveryForm.reset();
+}
+
+function closeDeliveryModal() {
+  deliveryModal.classList.add("is-hidden");
+  deliveryMessage.textContent = "";
+}
+
+deliverButton?.addEventListener("click", openDeliveryModal);
+deliveryClose?.addEventListener("click", closeDeliveryModal);
+deliveryModal?.addEventListener("click", (event) => {
+  if (event.target === deliveryModal) closeDeliveryModal();
+});
+
+deliveryForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(deliveryForm);
+  const comment = String(formData.get("comment") || "").trim();
+  const address = String(formData.get("address") || "").trim();
+  const submitButton = deliveryForm.querySelector(".delivery-submit");
+
+  if (!comment || !address) {
+    deliveryMessage.textContent = "배달 메모와 주소를 입력해주세요.";
+    return;
+  }
+
+  submitButton.disabled = true;
+  deliveryMessage.textContent = "";
+
+  try {
+    await requestApi({
+      action: "add_delivery",
+      user_id: currentUserId,
+      team_id: currentCategory,
+      comment,
+      address,
+    });
+    closeDeliveryModal();
+    renderUpdates(currentCategory);
+  } catch (error) {
+    deliveryMessage.textContent = error.message;
+  } finally {
+    submitButton.disabled = false;
+  }
+});
+
+feed.addEventListener("submit", async (event) => {
+  if (!event.target.classList.contains("comment-form")) return;
+
+  event.preventDefault();
+
+  const form = event.target;
+  const section = form.closest(".comments");
+  const input = form.querySelector(".comment-input");
+  const button = form.querySelector(".comment-submit");
+  const cardId = section?.dataset.cardId;
+  const comment = input.value.trim();
+
+  if (!cardId || !comment) return;
+
+  button.disabled = true;
+
+  try {
+    const result = await requestApi({
+      action: "add_comment",
+      card_id: cardId,
+      user_id: currentUserId,
+      comment,
+    });
+    input.value = "";
+    form.classList.add("is-hidden");
+    renderComments(cardId, result.comments || []);
+  } catch (error) {
+    input.value = "";
+    input.placeholder = error.message;
+    input.focus();
+  } finally {
+    button.disabled = false;
+  }
+});
+
+feed.addEventListener("click", (event) => {
+  const toggleButton = event.target.closest(".comment-toggle");
+  if (!toggleButton) return;
+
+  const card = toggleButton.closest(".update-card");
+  const section = card?.querySelector(".comments");
+  const form = section?.querySelector(".comment-form");
+  const input = section?.querySelector(".comment-input");
+
+  form?.classList.toggle("is-hidden");
+  if (!form?.classList.contains("is-hidden")) {
+    input?.focus();
+  }
+});
+
+logoutButton?.addEventListener("click", logout);
+
+if (sessionStorage.getItem(ACCESS_STORAGE_KEY) === "true" && currentUserId) {
   unlockSite();
 } else {
-  passwordInput?.focus();
+  sessionStorage.removeItem(ACCESS_STORAGE_KEY);
+  setAuthMode(authMode);
 }
 
 window.addEventListener("resize", () => renderUpdates());

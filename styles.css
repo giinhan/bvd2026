@@ -4,6 +4,7 @@
   --ink-soft: #ff8c84;
   --panel: #fffdf9;
   --shadow: #ff3a32;
+  --logo-brown: #a8280e;
   --brick: #6f120b;
   --paper-bvd: #fff0ed;
   --paper-w: #fff1dc;
@@ -47,20 +48,79 @@ body.is-locked .feed {
   inset: 0;
   z-index: 100;
   display: grid;
-  place-items: center;
+  grid-template-rows: 19vh auto minmax(42px, 7vh) auto minmax(34px, 6vh) auto 1fr;
+  justify-items: center;
   padding: 24px;
-  background: var(--paper);
+  background: #ffffff;
 }
 
 body:not(.is-locked) .password-gate {
   display: none;
 }
 
-.password-form {
-  width: min(100%, 260px);
+.auth-panel {
+  display: grid;
+  grid-row: 4;
+  width: min(100%, 300px);
+  justify-items: center;
 }
 
-.password-input {
+.auth-logo {
+  display: block;
+  width: clamp(118px, 18vw, 164px);
+  height: auto;
+}
+
+.auth-form {
+  display: grid;
+  grid-row: 6;
+  width: 100%;
+  max-width: 300px;
+  gap: 12px;
+}
+
+.auth-title {
+  grid-row: 2;
+  width: min(100%, 720px);
+  color: #000000;
+  font-family: "Gothic A1", "Noto Sans KR", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.auth-tab,
+.auth-submit {
+  height: 38px;
+  border: 1px solid #000000;
+  border-radius: 0;
+  color: #000000;
+  background: var(--panel);
+  box-shadow: 4px 4px 0 var(--tab-shadow);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-tab.is-active,
+.auth-submit {
+  color: #ffffff;
+  background: var(--logo-brown);
+}
+
+.auth-submit:disabled {
+  cursor: progress;
+  opacity: 0.65;
+}
+
+.auth-input {
   width: 100%;
   height: 42px;
   border: 1px solid #000000;
@@ -74,15 +134,25 @@ body:not(.is-locked) .password-gate {
   text-align: center;
 }
 
-.password-input:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 4px;
+.auth-input:focus-visible,
+.auth-tab:focus-visible,
+.auth-submit:focus-visible {
+  outline: none;
 }
 
-.password-error {
+.auth-input:focus,
+.auth-input:focus-visible {
+  border-color: #000000;
+}
+
+.auth-input:focus::placeholder {
+  color: transparent;
+}
+
+.auth-message {
   min-height: 20px;
-  margin-top: 14px;
-  color: var(--ink);
+  margin-top: 2px;
+  color: var(--logo-brown);
   font-family: "Noto Sans KR", "IBM Plex Mono", sans-serif;
   font-size: 13px;
   font-weight: 500;
@@ -113,9 +183,73 @@ body[data-category="F"] {
   position: sticky;
   top: 0;
   z-index: 10;
-  padding: 26px 3vw 18px;
+  padding: 26px calc(3vw + 118px) 18px 3vw;
   background: linear-gradient(180deg, var(--paper) 72%, color-mix(in srgb, var(--paper) 0%, transparent));
   transition: background 160ms ease;
+}
+
+.deliver-button {
+  position: absolute;
+  top: 24px;
+  right: calc(3vw + 48px);
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.deliver-icon {
+  display: block;
+  width: 54px;
+  height: 40px;
+  image-rendering: pixelated;
+}
+
+.deliver-button:hover,
+.deliver-button:focus-visible {
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.deliver-button:active {
+  transform: translateY(1px);
+}
+
+.logout-button {
+  position: absolute;
+  top: 16px;
+  right: 3vw;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.logout-icon {
+  display: block;
+  width: 34px;
+  height: 42px;
+  image-rendering: pixelated;
+}
+
+.logout-button:hover {
+  transform: translateY(-1px) rotate(3deg);
+}
+
+.logout-button:active {
+  transform: translateY(1px);
+}
+
+.logout-button:focus-visible {
+  outline: none;
 }
 
 .tabs {
@@ -289,9 +423,9 @@ p {
 
 .date-tag {
   position: absolute;
-  right: 9px;
+  right: 49px;
   bottom: 9px;
-  max-width: calc(100% - 18px);
+  max-width: calc(100% - 58px);
   padding: 5px 7px 4px;
   border: 1px solid currentColor;
   color: currentColor;
@@ -300,6 +434,246 @@ p {
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
+}
+
+.comments {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+}
+
+.comment-list {
+  display: grid;
+  gap: 8px;
+  min-height: 0;
+  color: var(--card-color);
+  font-family: "Work Sans", "Noto Sans KR", sans-serif;
+  font-size: 13px;
+}
+
+.comment-item {
+  display: grid;
+  gap: 3px;
+}
+
+.comment-meta {
+  color: var(--card-color);
+  font-family: "Work Sans", "Noto Sans KR", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.7;
+  text-align: right;
+}
+
+.comment-text {
+  color: var(--card-color);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.comment-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.comment-form.is-hidden {
+  display: none;
+}
+
+.comment-input {
+  min-width: 0;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  color: currentColor;
+  background: var(--panel);
+  font: inherit;
+  font-size: 13px;
+}
+
+.comment-submit {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  color: currentColor;
+  background: transparent;
+  cursor: pointer;
+}
+
+.comment-toggle {
+  position: absolute;
+  right: 8px;
+  bottom: 4px;
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  color: currentColor;
+  background: transparent;
+  cursor: pointer;
+}
+
+.comment-toggle-icon {
+  display: block;
+  width: 30px;
+  height: 30px;
+  image-rendering: pixelated;
+}
+
+.comment-submit:hover,
+.comment-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.comment-submit:active,
+.comment-toggle:active {
+  transform: translateY(1px);
+}
+
+.comment-submit:disabled {
+  cursor: progress;
+  opacity: 0.65;
+}
+
+.comment-input:focus-visible,
+.comment-submit:focus-visible,
+.comment-toggle:focus-visible {
+  outline: none;
+}
+
+.comment-input:focus-visible,
+.comment-submit:focus-visible {
+  background: rgba(255, 253, 249, 0.86);
+}
+
+.comment-toggle:focus-visible {
+  filter: drop-shadow(0 0 0 currentColor);
+}
+
+.delivery-card .delivery-body {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  min-height: 148px;
+  padding: 16px;
+  border: 1px solid currentColor;
+  background: #fffefa;
+}
+
+.delivery-comment,
+.delivery-address {
+  color: var(--card-color);
+  font-family: "Noto Sans KR", "Work Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.delivery-address {
+  align-self: end;
+  opacity: 0.72;
+}
+
+.delivery-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: transparent;
+}
+
+.delivery-modal.is-hidden {
+  display: none;
+}
+
+.delivery-form {
+  position: relative;
+  display: grid;
+  width: min(100%, 340px);
+  gap: 12px;
+  padding: 22px;
+  border: 1px solid #000000;
+  background: var(--panel);
+  box-shadow: 6px 6px 0 #000000;
+}
+
+.delivery-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.delivery-input {
+  width: 100%;
+  min-height: 84px;
+  padding: 10px;
+  border: 1px solid #000000;
+  border-radius: 0;
+  color: #000000;
+  background: #ffffff;
+  font: inherit;
+  resize: vertical;
+}
+
+.delivery-input[name="comment"] {
+  min-height: 168px;
+}
+
+.delivery-input[name="address"] {
+  min-height: 84px;
+  resize: none;
+}
+
+.delivery-input:focus,
+.delivery-input:focus-visible {
+  outline: none;
+}
+
+.delivery-input:focus::placeholder {
+  color: transparent;
+}
+
+.delivery-submit {
+  height: 38px;
+  border: 1px solid #000000;
+  border-radius: 0;
+  color: #000000;
+  background: #bfff00;
+  box-shadow: 4px 4px 0 #000000;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.delivery-submit:disabled {
+  cursor: progress;
+  opacity: 0.65;
+}
+
+.delivery-message {
+  min-height: 18px;
+  color: var(--logo-brown);
+  font-family: "Noto Sans KR", "IBM Plex Mono", sans-serif;
+  font-size: 13px;
+  text-align: center;
 }
 
 .empty-card {
@@ -326,7 +700,30 @@ p {
   }
 
   .topbar {
-    padding: 18px 18px 12px;
+    padding: 18px 118px 12px 18px;
+  }
+
+  .auth-title {
+    font-size: 18px;
+  }
+
+  .auth-logo {
+    width: clamp(104px, 34vw, 138px);
+  }
+
+  .logout-button {
+    top: 10px;
+    right: 14px;
+  }
+
+  .deliver-button {
+    top: 20px;
+    right: 62px;
+  }
+
+  .deliver-icon {
+    width: 50px;
+    height: 38px;
   }
 
   .tabs {

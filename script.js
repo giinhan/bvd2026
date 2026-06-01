@@ -1369,7 +1369,8 @@ feed.addEventListener("submit", async (event) => {
     renderComments(cardId, result.comments || []);
   } catch (error) {
     input.value = "";
-    input.placeholder = error.message;
+    input.placeholder = "다시 시도해주세요";
+    console.warn(error.message);
     input.focus();
   } finally {
     button.disabled = false;

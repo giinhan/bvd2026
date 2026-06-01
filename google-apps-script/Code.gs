@@ -9,6 +9,10 @@ const DATABASE_SPREADSHEET_NAME = "bvd_database";
 const USER_SHEET_NAME = "user";
 const COMMENT_SHEET_NAME = "comment";
 const DELIVER_SHEET_NAME = "deliver";
+const SOLAPI_API_KEY_PROPERTY = "SOLAPI_API_KEY";
+const SOLAPI_API_SECRET_PROPERTY = "SOLAPI_API_SECRET";
+const SOLAPI_FROM_PROPERTY = "SOLAPI_FROM";
+const ADMIN_PHONE_PROPERTY = "ADMIN_PHONE";
 
 function doPost(event) {
   try {
@@ -157,6 +161,15 @@ function handleAddComment(body) {
     nextRow[comments.columns.user_id] = userId;
     nextRow[comments.columns.comment] = comment;
     comments.sheet.appendRow(nextRow);
+
+    safeSendAdminSms(
+      [
+        "[비버댐] 새 댓글",
+        "작성자: " + userId,
+        "카드: " + cardId,
+        "내용: " + comment,
+      ].join("\n")
+    );
   } finally {
     lock.releaseLock();
   }
@@ -253,6 +266,16 @@ function handleAddDelivery(body) {
     nextRow[deliveries.columns.comment] = comment;
     nextRow[deliveries.columns.address] = address;
     deliveries.sheet.appendRow(nextRow);
+
+    safeSendAdminSms(
+      [
+        "[비버댐] 새 배달 메모",
+        "팀: " + teamId,
+        "작성자: " + userId,
+        "내용: " + comment,
+        "주소: " + address,
+      ].join("\n")
+    );
   } finally {
     lock.releaseLock();
   }
@@ -349,6 +372,81 @@ function jsonResponse(payload) {
   return ContentService.createTextOutput(JSON.stringify(payload)).setMimeType(
     ContentService.MimeType.JSON
   );
+}
+
+function safeSendAdminSms(text) {
+  try {
+    sendAdminSms(text);
+  } catch (error) {
+    console.error("SOLAPI 발송 실패: " + error.message);
+  }
+}
+
+function sendAdminSms(text) {
+  const properties = PropertiesService.getScriptProperties();
+  const apiKey = properties.getProperty(SOLAPI_API_KEY_PROPERTY);
+  const apiSecret = properties.getProperty(SOLAPI_API_SECRET_PROPERTY);
+  const from = normalizePhoneNumber(properties.getProperty(SOLAPI_FROM_PROPERTY));
+  const to = normalizePhoneNumber(properties.getProperty(ADMIN_PHONE_PROPERTY));
+
+  if (!apiKey || !apiSecret || !from || !to) {
+    throw new Error("SOLAPI Script Properties가 설정되지 않았습니다.");
+  }
+
+  const response = UrlFetchApp.fetch("https://api.solapi.com/messages/v4/send-many/detail", {
+    method: "post",
+    contentType: "application/json",
+    headers: {
+      Authorization: createSolapiAuthHeader(apiKey, apiSecret),
+    },
+    payload: JSON.stringify({
+      messages: [
+        {
+          to: to,
+          from: from,
+          text: text,
+        },
+      ],
+    }),
+    muteHttpExceptions: true,
+  });
+
+  const statusCode = response.getResponseCode();
+  if (statusCode < 200 || statusCode >= 300) {
+    throw new Error("SOLAPI " + statusCode + ": " + response.getContentText());
+  }
+}
+
+function createSolapiAuthHeader(apiKey, apiSecret) {
+  const date = new Date().toISOString();
+  const salt = Utilities.getUuid().replace(/-/g, "");
+  const signature = createHmacSha256Hex(date + salt, apiSecret);
+
+  return (
+    "HMAC-SHA256 apiKey=" +
+    apiKey +
+    ", date=" +
+    date +
+    ", salt=" +
+    salt +
+    ", signature=" +
+    signature
+  );
+}
+
+function createHmacSha256Hex(value, secret) {
+  const signature = Utilities.computeHmacSha256Signature(value, secret);
+
+  return signature
+    .map(function (byte) {
+      const value = byte < 0 ? byte + 256 : byte;
+      return ("0" + value.toString(16)).slice(-2);
+    })
+    .join("");
+}
+
+function normalizePhoneNumber(phoneNumber) {
+  return String(phoneNumber || "").replace(/\D/g, "");
 }
 
 function hashPassword(password) {

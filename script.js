@@ -1183,9 +1183,16 @@ function createDeliveryCard(delivery) {
   card.dataset.category = delivery.team_id;
   card.dataset.cardId = delivery.card_id;
 
+  const header = document.createElement("div");
+  header.className = "delivery-header";
+
   const text = document.createElement("p");
-  text.className = "update-text";
+  text.className = "update-text delivery-title";
   text.textContent = "배달";
+
+  const dateTag = document.createElement("span");
+  dateTag.className = "date-tag delivery-date-tag";
+  dateTag.textContent = formatCardDateTime(delivery.timestamp);
 
   const body = document.createElement("div");
   body.className = "delivery-body";
@@ -1198,12 +1205,9 @@ function createDeliveryCard(delivery) {
   address.className = "delivery-address";
   address.textContent = delivery.address;
 
-  const dateTag = document.createElement("span");
-  dateTag.className = "date-tag";
-  dateTag.textContent = formatCardDateTime(delivery.timestamp);
-
-  body.append(comment, address, dateTag, createCommentToggleButton());
-  card.append(text, body, createCommentSection(delivery.card_id));
+  header.append(text, dateTag, createCommentToggleButton());
+  body.append(comment, address);
+  card.append(header, body, createCommentSection(delivery.card_id));
 
   return card;
 }

@@ -375,6 +375,18 @@ p {
   font-weight: 500;
 }
 
+.delivery-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 7px;
+  padding: 2px 2px 12px;
+}
+
+.delivery-title {
+  padding: 0;
+}
+
 .image-wrap {
   position: relative;
   display: block;
@@ -560,13 +572,26 @@ p {
 }
 
 .delivery-card .delivery-body {
-  position: relative;
   display: grid;
   gap: 12px;
   min-height: 148px;
   padding: 16px;
   border: 1px solid currentColor;
   background: #fffefa;
+}
+
+.delivery-card .date-tag,
+.delivery-card .comment-toggle {
+  position: static;
+}
+
+.delivery-card .date-tag {
+  max-width: none;
+}
+
+.delivery-card .comment-toggle {
+  width: 30px;
+  height: 30px;
 }
 
 .delivery-comment,

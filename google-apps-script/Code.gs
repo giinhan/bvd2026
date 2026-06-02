@@ -405,6 +405,7 @@ function sendAdminSms(text) {
           to: to,
           from: from,
           text: text,
+          autoTypeDetect: true,
         },
       ],
     }),
@@ -412,9 +413,39 @@ function sendAdminSms(text) {
   });
 
   const statusCode = response.getResponseCode();
+  const responseText = response.getContentText();
+  console.log("SOLAPI 응답: " + responseText);
+
   if (statusCode < 200 || statusCode >= 300) {
-    throw new Error("SOLAPI " + statusCode + ": " + response.getContentText());
+    throw new Error("SOLAPI " + statusCode + ": " + responseText);
   }
+
+  let result = {};
+  try {
+    result = JSON.parse(responseText || "{}");
+  } catch (error) {
+    throw new Error("SOLAPI 응답을 읽을 수 없습니다: " + responseText);
+  }
+
+  if (result.failedMessageList && result.failedMessageList.length) {
+    throw new Error("SOLAPI 발송 실패: " + JSON.stringify(result.failedMessageList));
+  }
+
+  if (typeof result.failedCount === "number" && result.failedCount > 0) {
+    throw new Error("SOLAPI 발송 실패: " + responseText);
+  }
+}
+
+function testSolapiProperties() {
+  const properties = PropertiesService.getScriptProperties();
+  console.log("SOLAPI_API_KEY 설정됨: " + Boolean(properties.getProperty(SOLAPI_API_KEY_PROPERTY)));
+  console.log("SOLAPI_API_SECRET 설정됨: " + Boolean(properties.getProperty(SOLAPI_API_SECRET_PROPERTY)));
+  console.log("SOLAPI_FROM: " + normalizePhoneNumber(properties.getProperty(SOLAPI_FROM_PROPERTY)));
+  console.log("ADMIN_PHONE: " + normalizePhoneNumber(properties.getProperty(ADMIN_PHONE_PROPERTY)));
+}
+
+function testSendAdminSms() {
+  sendAdminSms("[비버댐] SOLAPI 문자 테스트");
 }
 
 function createSolapiAuthHeader(apiKey, apiSecret) {

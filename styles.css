@@ -184,8 +184,7 @@ body[data-category="F"] {
   top: 0;
   z-index: 10;
   padding: 26px calc(3vw + 118px) 18px 3vw;
-  background: linear-gradient(180deg, var(--paper) 72%, color-mix(in srgb, var(--paper) 0%, transparent));
-  transition: background 160ms ease;
+  background: transparent;
 }
 
 .deliver-button {

@@ -189,8 +189,8 @@ body[data-category="F"] {
 
 .deliver-button {
   position: absolute;
-  top: 24px;
-  right: calc(3vw + 48px);
+  top: 30px;
+  right: calc(3vw + 68px);
   display: grid;
   place-items: center;
   width: 48px;
@@ -220,7 +220,7 @@ body[data-category="F"] {
 
 .logout-button {
   position: absolute;
-  top: 16px;
+  top: 20px;
   right: 3vw;
   display: grid;
   place-items: center;
@@ -711,13 +711,13 @@ p {
   }
 
   .logout-button {
-    top: 10px;
+    top: 8px;
     right: 14px;
   }
 
   .deliver-button {
-    top: 20px;
-    right: 62px;
+    top: 18px;
+    right: 82px;
   }
 
   .deliver-icon {

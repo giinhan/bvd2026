@@ -725,7 +725,11 @@ p {
   }
 
   .topbar {
-    padding: 18px 118px 12px 18px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 46px 36px;
+    align-items: end;
+    gap: 10px;
+    padding: 18px 18px 12px;
   }
 
   .auth-title {
@@ -737,22 +741,30 @@ p {
   }
 
   .logout-button {
-    top: 8px;
-    right: 14px;
+    position: static;
+    width: 36px;
+    height: 44px;
   }
 
   .deliver-button {
-    top: 18px;
-    right: 82px;
+    position: static;
+    width: 46px;
+    height: 36px;
   }
 
   .deliver-icon {
-    width: 50px;
-    height: 38px;
+    width: 46px;
+    height: 34px;
+  }
+
+  .logout-icon {
+    width: 31px;
+    height: 39px;
   }
 
   .tabs {
     gap: 8px;
+    min-width: 0;
   }
 
   .tab {

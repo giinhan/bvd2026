@@ -467,8 +467,9 @@ p {
 
 .comment-text {
   color: var(--card-color);
-  font-size: 13px;
-  font-weight: 500;
+  font-family: "Poor Story", "Noto Sans KR", sans-serif;
+  font-size: 15px;
+  font-weight: 400;
 }
 
 .comment-form {

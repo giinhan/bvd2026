@@ -214,7 +214,7 @@ const farmUpdates = [
     folder: "bvd",
     fileName: "b-31-0522",
     date: "2026. 5. 22",
-    text: "여기도 저기도 여기저기 ",
+    text: "여기도 저기도 여기저기",
   },
   {
     category: "BVD",
@@ -257,6 +257,41 @@ const farmUpdates = [
     fileName: "b-37-0522",
     date: "2026. 5. 22",
     text: "씨앗으로 시작한 애들 모종판에서 아직 애지중지",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0602-b-38",
+    date: "2026. 6. 2",
+    text: "상추랑 시금치",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0602-b-39",
+    date: "2026. 6. 2",
+    text: "청경채",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0602-b-40",
+    date: "2026. 6. 2",
+    text: "너넨 누구니",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0602-b-41",
+    date: "2026. 6. 2",
+    text: "오크상추라 부르는",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0602-b-42",
+    date: "2026. 6. 2",
+    text: "미니밭에 뒤늦게 뿌렸던 잎채소 믹스",
   },
   {
     category: "F",
@@ -392,6 +427,48 @@ const farmUpdates = [
     text: "운명하신 바질만 한번 리필해드리고! 곧 열무 한번 솎아줘야겠음!",
   },
   {
+    category: "F",
+    folder: "fufus",
+    fileName: "0602-f-20",
+    date: "2026. 6. 2",
+    text: "밭뷰",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "0602-f-21",
+    date: "2026. 6. 2",
+    text: "쪽파뷰",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "0602-f-22",
+    date: "2026. 6. 2",
+    text: "미니쪽파뷰",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "0602-f-23",
+    date: "2026. 6. 2",
+    text: "두백감자",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "0602-f-24",
+    date: "2026. 6. 2",
+    text: "수미감자",
+  },
+  {
+    category: "F",
+    folder: "fufus",
+    fileName: "0602-f-25",
+    date: "2026. 6. 2",
+    text: "자…열무를 솎아서 보내드리고 싶습니다!",
+  },
+  {
     category: "S",
     folder: "sansam",
     fileName: "s-01",
@@ -522,7 +599,7 @@ const farmUpdates = [
     folder: "sansam",
     fileName: "s-19-0522",
     date: "2026. 5. 22",
-    text: "단호박 독야청청 ",
+    text: "단호박 독야청청",
   },
   {
     category: "S",
@@ -537,6 +614,62 @@ const farmUpdates = [
     fileName: "s-21-0522",
     date: "2026. 5. 22",
     text: "밭뷰 : 씨앗자리에 직파한 씨앗들이 힘내서 올라오기를 기다리고 있습니다.",
+  },
+  {
+    category: "S",
+    folder: "sansam",
+    fileName: "0602-s-22",
+    date: "2026. 6. 2",
+    text: "밭뷰",
+  },
+  {
+    category: "S",
+    folder: "sansam",
+    fileName: "0602-s-23",
+    date: "2026. 6. 2",
+    text: "파프리카뷰",
+  },
+  {
+    category: "S",
+    folder: "sansam",
+    fileName: "0602-s-24",
+    date: "2026. 6. 2",
+    text: "키큰 토마토와 키작은 토마토",
+  },
+  {
+    category: "S",
+    folder: "sansam",
+    fileName: "0602-s-25",
+    date: "2026. 6. 2",
+    text: "그..루꼴라 보내드릴게요",
+  },
+  {
+    category: "S",
+    folder: "sansam",
+    fileName: "0602-s-26",
+    date: "2026. 6. 2",
+    text: "제가 없는 일주일사이에 한동수님이 맘대로 적양배추를 추가하셨습니다…ㅋㅋ 이렇게 됨..늘이래…증정!!",
+  },
+  {
+    category: "S",
+    folder: "sansam",
+    fileName: "0602-s-27",
+    date: "2026. 6. 2",
+    text: "오이구요",
+  },
+  {
+    category: "S",
+    folder: "sansam",
+    fileName: "0602-s-28",
+    date: "2026. 6. 2",
+    text: "호박이에요 (벌써부터 삐져나가기 시작)(나중에 난리남)(호박만의 세상이 됨)",
+  },
+  {
+    category: "S",
+    folder: "sansam",
+    fileName: "0602-s-29",
+    date: "2026. 6. 2",
+    text: "가지가 그새 이만큼이나 컸어요 지난주에 귀여웠는뎅 청소년대따",
   },
   {
     category: "U",
@@ -697,7 +830,7 @@ const farmUpdates = [
     folder: "usac",
     imageFiles: ["u-23-0515-1.jpeg", "u-23-0515-2.jpeg"],
     date: "2026. 5. 15",
-    text: '"미나리 전멸"',
+    text: "\"미나리 전멸\"",
   },
   {
     category: "W",
@@ -776,6 +909,20 @@ const farmUpdates = [
     date: "2026. 5. 22",
     text: "전체 밭뷰이옵니다..감자 좀 올라오지??? 이제 좀???",
   },
+  {
+    category: "W",
+    folder: "works",
+    fileName: "0602-w-12",
+    date: "2026. 6. 2",
+    text: "큰거 맞나..암튼 죽지는 않았슴",
+  },
+  {
+    category: "W",
+    folder: "works",
+    fileName: "0602-w-13",
+    date: "2026. 6. 2",
+    text: "걍 귀여운 탑뷰",
+  },
 ];
 
 const tabs = document.querySelectorAll(".tab");
@@ -795,7 +942,7 @@ const deliveryMessage = document.querySelector(".delivery-message");
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwq16BgXtuKzrXvPtIpEXcUgoaFhMG7KbAWUhH7xkUpKAB3Evv6jK0QcVnSEOR7Gaj5/exec";
 const ACCESS_STORAGE_KEY = "bvd-user-access-granted";
 const USER_ID_STORAGE_KEY = "bvd-user-id";
-const imageVersion = "20260530-4";
+const imageVersion = "20260602-1";
 const pixelCommentIcons = ["droplet", "sun", "moon", "cloud", "sparkle", "tomato", "carrot", "corn", "pepper", "eggplant"];
 
 function getCategories() {
@@ -854,6 +1001,30 @@ function formatCommentTime(timestamp) {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+function formatCardDateTime(timestamp) {
+  if (!timestamp) return "";
+
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = String(date.getHours()).padStart(2, "0");
+  const minute = String(date.getMinutes()).padStart(2, "0");
+
+  return `${month}. ${day} ${hour}:${minute}`;
+}
+
+function formatCardDate(dateTag) {
+  const parts = String(dateTag || "").match(/\d+/g);
+  if (!parts || parts.length < 2) return dateTag || "";
+
+  const month = parts.length >= 3 ? parts[1] : parts[0];
+  const day = parts.length >= 3 ? parts[2] : parts[1];
+
+  return `${Number(month)}. ${Number(day)}`;
 }
 
 function createCommentSection(cardId) {
@@ -998,7 +1169,7 @@ function createUpdateCard(update) {
 
   const dateTag = document.createElement("figcaption");
   dateTag.className = "date-tag";
-  dateTag.textContent = update.date;
+  dateTag.textContent = formatCardDate(update.date);
 
   imageWrap.append(...images, dateTag, createCommentToggleButton());
   card.append(text, imageWrap, createCommentSection(cardId));
@@ -1029,7 +1200,7 @@ function createDeliveryCard(delivery) {
 
   const dateTag = document.createElement("span");
   dateTag.className = "date-tag";
-  dateTag.textContent = formatCommentTime(delivery.timestamp);
+  dateTag.textContent = formatCardDateTime(delivery.timestamp);
 
   body.append(comment, address, dateTag, createCommentToggleButton());
   card.append(text, body, createCommentSection(delivery.card_id));

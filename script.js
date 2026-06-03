@@ -294,6 +294,90 @@ const farmUpdates = [
     text: "미니밭에 뒤늦게 뿌렸던 잎채소 믹스",
   },
   {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0603-b-43",
+    date: "2026. 6. 3",
+    text: "모종을 계속 키우고 있어요 타이밍 안끊어지게",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0603-b-44",
+    date: "2026. 6. 3",
+    text: "자연에서 귀한 색",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0603-b-45",
+    date: "2026. 6. 3",
+    text: "남색초원하늘소. 더듬이거 너무너무너무 멋져부러",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0603-b-46",
+    date: "2026. 6. 3",
+    text: "얘가 뭐였더라…모종 잎이 두종류라 신기하다고 그랬었는데",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0603-b-47",
+    date: "2026. 6. 3",
+    text: "유난히 혼자 잘크는애들 기둥 세워드림",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0603-b-48",
+    date: "2026. 6. 3",
+    text: "저뒤에 메리골드 씨앗 심었는데…..기미도 안보여",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0603-b-49",
+    date: "2026. 6. 3",
+    text: "이렇게 잘 크는 애들도 있는데 정말 알수없다",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0603-b-50",
+    date: "2026. 6. 3",
+    text: "이러케 아무런 신호도 없을 수도 있다. (씨앗 왕창 심음)",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0603-b-51",
+    date: "2026. 6. 3",
+    text: "여기도 마니 심어놨는데",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0603-b-52",
+    date: "2026. 6. 3",
+    text: "기별없는 땅이 너무 많다 ㅋㅋ 아악",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0603-b-53",
+    date: "2026. 6. 3",
+    text: "여긴 또 반반이여 반만 자라고 반은 소식없음",
+  },
+  {
+    category: "BVD",
+    folder: "bvd",
+    fileName: "0603-b-54",
+    date: "2026. 6. 3",
+    text: "휴…힘내보자 더 신경써보마",
+  },
+  {
     category: "F",
     folder: "fufus",
     fileName: "f-01",
@@ -833,6 +917,41 @@ const farmUpdates = [
     text: "\"미나리 전멸\"",
   },
   {
+    category: "U",
+    folder: "usac",
+    fileName: "0603-u-24",
+    date: "2026. 6. 3",
+    text: "여기부터 저기까지 다 고구마",
+  },
+  {
+    category: "U",
+    folder: "usac",
+    fileName: "0603-u-25",
+    date: "2026. 6. 3",
+    text: "뒤돌아서 또 여기부터 저기까지 다 고구마",
+  },
+  {
+    category: "U",
+    folder: "usac",
+    fileName: "0603-u-26",
+    date: "2026. 6. 3",
+    text: "그…다른 밭보다 왜 유난히 잘 안되지….만 결국엔 승리할것입니다 (다짐)",
+  },
+  {
+    category: "U",
+    folder: "usac",
+    fileName: "0603-u-27",
+    date: "2026. 6. 3",
+    text: "일단 블루베리가 있는 밭이라고",
+  },
+  {
+    category: "U",
+    folder: "usac",
+    fileName: "0603-u-28",
+    date: "2026. 6. 3",
+    text: "불황 와중에 살아남은 애들이 기특한…계속 힘써봅니다",
+  },
+  {
     category: "W",
     folder: "works",
     fileName: "w-01",
@@ -923,6 +1042,34 @@ const farmUpdates = [
     date: "2026. 6. 2",
     text: "걍 귀여운 탑뷰",
   },
+  {
+    category: "W",
+    folder: "works",
+    fileName: "0603-w-14",
+    date: "2026. 6. 3",
+    text: "하루지나고 보니 더 큰거 같아서 찍어봄",
+  },
+  {
+    category: "W",
+    folder: "works",
+    fileName: "0603-w-15",
+    date: "2026. 6. 3",
+    text: "나만 그런가..뒤돌아서면 애들이 계속 크는거 같아",
+  },
+  {
+    category: "W",
+    folder: "works",
+    fileName: "0603-w-16",
+    date: "2026. 6. 3",
+    text: "여주 기둥 세워드림",
+  },
+  {
+    category: "W",
+    folder: "works",
+    fileName: "0603-w-17",
+    date: "2026. 6. 3",
+    text: "호박은 옆집 괴롭히지 말라고 교통정리해드리규",
+  },
 ];
 
 const tabs = document.querySelectorAll(".tab");
@@ -942,7 +1089,7 @@ const deliveryMessage = document.querySelector(".delivery-message");
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwq16BgXtuKzrXvPtIpEXcUgoaFhMG7KbAWUhH7xkUpKAB3Evv6jK0QcVnSEOR7Gaj5/exec";
 const ACCESS_STORAGE_KEY = "bvd-user-access-granted";
 const USER_ID_STORAGE_KEY = "bvd-user-id";
-const imageVersion = "20260602-1";
+const imageVersion = "20260603-1";
 const pixelCommentIcons = ["droplet", "sun", "moon", "cloud", "sparkle", "tomato", "carrot", "corn", "pepper", "eggplant"];
 
 function getCategories() {

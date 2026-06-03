@@ -1108,6 +1108,7 @@ let authMode = "login";
 let currentUserId = sessionStorage.getItem(USER_ID_STORAGE_KEY) || "";
 let deliveryUpdates = [];
 let renderRequestId = 0;
+let renderedColumnCount = 0;
 
 function parseDateTag(dateTag) {
   const [year, month, day] = dateTag.match(/\d+/g).map(Number);
@@ -1409,6 +1410,7 @@ async function renderUpdates(category = currentCategory) {
   });
 
   feed.replaceChildren(...columns);
+  renderedColumnCount = columns.length;
   loadComments(visibleUpdates.map(getUpdateId));
 }
 
@@ -1690,7 +1692,6 @@ feed.addEventListener("submit", async (event) => {
     form.classList.add("is-hidden");
     renderComments(cardId, result.comments || []);
   } catch (error) {
-    input.value = "";
     input.placeholder = "다시 시도해주세요";
     console.warn(error.message);
     input.focus();
@@ -1723,4 +1724,11 @@ if (sessionStorage.getItem(ACCESS_STORAGE_KEY) === "true" && currentUserId) {
   setAuthMode(authMode);
 }
 
-window.addEventListener("resize", () => renderUpdates());
+window.addEventListener("resize", () => {
+  if (!isUnlocked) return;
+
+  const nextColumnCount = getColumnCount();
+  if (nextColumnCount === renderedColumnCount) return;
+
+  renderUpdates();
+});
